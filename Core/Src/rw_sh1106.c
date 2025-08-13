@@ -120,12 +120,15 @@ void rw_sh1106_init(void)
 
 void rw_sh1106_setposition(uint8_t column, uint8_t row)
 {
-	uint8_t x = column * 6 + 2;
-	_cmd(SH1106_MEMORYMODE);
-	_cmd(0x10);
-	_cmd(x & 0x0F);
-	_cmd(((x & 0xF0) >> 4) | 0x10);
-	_cmd(row | 0xB0);
+	uint8_t x = column * 6;
+	_cmd(0x20); // SSD1306_MEMORYMODE
+	_cmd(0x00); // 0x00 = Page Addressing Mode
+	_cmd(0x21); // SSD1306_COLUMNADDR
+	_cmd(x); // Start column
+	_cmd(127); // End column (for 128-wide displays)
+	_cmd(0x22); // SSD1306_PAGEADDR
+	_cmd(row); // Start page
+	_cmd(7); // End page (7 for 64px high)
 }
 
 void rw_sh1106_char(char c)
